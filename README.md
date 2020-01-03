@@ -1,3 +1,3 @@
 # PO-Flotte
 
-![Alt text](cluster.png?raw=true "Title")
+![Alt text](Cluster.png)
