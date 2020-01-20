@@ -64,7 +64,7 @@ for i in range(len(data_dict_boat)):
 print('La liste des bateaux de la côte méditerranéenne:'+'\n')
 for i in range(len(list_boat_med)):
     print(list_boat_med[i]["Port"],list_boat_med[i]["Nature"])
-#print(list_boat_med)
+print(list_boat_med)
 #print(data_dict[:3])
 print('\n')
 
@@ -150,7 +150,7 @@ valeur_graphique=[[] for i in range(k)]
 for i in range(len(numero_cluster)):
     valeur_graphique[numero_cluster[i]].append(coord_interventions[i])
 
-
+plt.figure()
 #colors=['b','g','orange','c','m','y']
 colors=list(mcolors.TABLEAU_COLORS.values()) #OU CSS4 OU BASE
 cluster_plot=[]
@@ -224,15 +224,52 @@ for l in alea:
     print(len(l), "  ", l)
 """ 
 
-interventions_potentielles_par_bateau = [0, 0, 0, 0, 0, 0]
-interventions_seules_par_bateau = [0, 0, 0, 0, 0, 0]
-for intervention in dict_intervention_type['1']:
+### Calcul nombre d'interventions maximales possibles ###
+
+nombre_interventions_potentielles_par_bateau = [0, 0, 0, 0, 0, 0]
+nombre_interventions_seules_par_bateau = [0, 0, 0, 0, 0, 0]
+
+
+for intervention in dict_intervention_type['3']:
     for j in range(len(intervention['listBoat'])):
-        interventions_potentielles_par_bateau[j]+=intervention['listBoat'][j]
+        nombre_interventions_potentielles_par_bateau[j]+=intervention['listBoat'][j]
     if sum(intervention['listBoat'])==1:
         k = 0
         while intervention['listBoat'][k]!=1:
             k+=1
-        interventions_seules_par_bateau[k]+=1
-print(interventions_potentielles_par_bateau)
-print(interventions_seules_par_bateau) 
+        nombre_interventions_seules_par_bateau[k]+=1
+print(nombre_interventions_potentielles_par_bateau)
+print(nombre_interventions_seules_par_bateau) 
+
+### Focus sur le navire n°5 Iles Lavezzi ###
+
+interventions_lavezzi=[]
+for intervention in dict_intervention_type['3']:
+        if intervention['listBoat'] == [0, 0, 0, 0, 1, 0]:
+            interventions_lavezzi.append(intervention)
+#print(len(interventions_lavezzi))
+
+'''
+coord_intervention_lavezzi = []
+for intervention in interventions_lavezzi:
+    coord_intervention_lavezzi.append(np.array(intervention.get('coord')))
+print(np.array(coord_intervention_lavezzi))
+for k in range(len(coord_intervention_lavezzi)):
+    plt.scatter(coord_intervention_lavezzi[k][0],coord_intervention_lavezzi[k][1])
+print(interventions_lavezzi[2])
+print(interventions_lavezzi[8])
+'''
+planning_interventions_beginning = [] #Que pour les interventions de niveau 1: [beginning, end, type]
+planning_interventions_end = []
+planning_interventions = []
+for intervention in interventions_lavezzi:
+    planning_interventions_beginning.append(intervention.get('beginning'))
+    planning_interventions_end.append(intervention.get('end'))
+planning_interventions_duree = []
+for i in range(len(planning_interventions_end)):
+    planning_interventions_duree.append(planning_interventions_end[i]-planning_interventions_beginning[i])
+    planning_interventions.append(i)
+
+plt.bar(x=planning_interventions, height=planning_interventions_duree, bottom=planning_interventions_beginning, align='edge')
+
+print(max(planning_interventions_end))
