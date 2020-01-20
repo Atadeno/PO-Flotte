@@ -139,7 +139,7 @@ print('\n')
 k=36 #On remarque qu'il y a 3 grandes zones contenant certains ports (Corse, Sète et Marseille et Toulon et Cannes), on décompose en 12 mois et 3 zones soit 36 clusters
 print('Nombre de Clusters:', k, '\n')
 
-coord_interventions=coord_intervention_3 #Liste de toutes les interventions
+coord_interventions=coord_intervention_1+coord_intervention_2+coord_intervention_3 #Liste de toutes les interventions
 
 kmeans = KMeans(n_clusters=k, random_state=0).fit(np.array(coord_interventions))
 numero_cluster=kmeans.predict(coord_interventions) #On associe à chaque intervention un numéro de cluster
@@ -168,17 +168,16 @@ for i in range(len(numero_cluster)):
         if data_dict_intervention[j].get('coord') == coord_interventions[i]:
             cluster[numero_cluster[i]].append(data_dict_intervention[i])
             break
-"""
+
 for i in range(len(cluster)):
     print('Cluster n°',i+1,len(cluster[i]))
-"""
-plt.show()
-    
+    s+=len(cluster[i])
+
 ### AFFICHAGE MEDITERRANEE AVEC LE TRAIT DE CÔTE ###   
     
-"""
 print('\n'+'Représentation des ESM et des Ports sur une Carte'+'\n')
-
+plt.show()
+'''
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 #setup Lambert Conformal basemap.
@@ -195,7 +194,7 @@ plt.show()
          
 #print(kmeans.predict(coord_port_med)) #Association d'un port à son cluster le plus proche
 #print(nom_port_med)
-"""
+'''
 
 ### Répartition des interventions sur les semaines ###
 
@@ -238,8 +237,8 @@ for intervention in dict_intervention_type['3']:
         while intervention['listBoat'][k]!=1:
             k+=1
         nombre_interventions_seules_par_bateau[k]+=1
-print(nombre_interventions_potentielles_par_bateau)
-print(nombre_interventions_seules_par_bateau) 
+#print(nombre_interventions_potentielles_par_bateau)
+#print(nombre_interventions_seules_par_bateau) 
 
 ### Focus sur le navire n°5 Iles Lavezzi ###
 
@@ -248,28 +247,43 @@ for intervention in dict_intervention_type['3']:
         if intervention['listBoat'] == [0, 0, 0, 0, 1, 0]:
             interventions_lavezzi.append(intervention)
 #print(len(interventions_lavezzi))
-
+            
 '''
 coord_intervention_lavezzi = []
 for intervention in interventions_lavezzi:
     coord_intervention_lavezzi.append(np.array(intervention.get('coord')))
 print(np.array(coord_intervention_lavezzi))
 for k in range(len(coord_intervention_lavezzi)):
-    plt.scatter(coord_intervention_lavezzi[k][0],coord_intervention_lavezzi[k][1])
+    plt.scatter(coord_intervention_lavezzi[k][0],coord_intervention_lavezzi[k][1]) #plot sur un carte
 print(interventions_lavezzi[2])
 print(interventions_lavezzi[8])
 '''
-planning_interventions_beginning = [] #Que pour les interventions de niveau 1: [beginning, end, type]
-planning_interventions_end = []
-planning_interventions = []
-for intervention in interventions_lavezzi:
-    planning_interventions_beginning.append(intervention.get('beginning'))
-    planning_interventions_end.append(intervention.get('end'))
-planning_interventions_duree = []
-for i in range(len(planning_interventions_end)):
-    planning_interventions_duree.append(planning_interventions_end[i]-planning_interventions_beginning[i])
-    planning_interventions.append(i)
+### Visualisation d'un planning sous forme de bar chart ###
 
-plt.bar(x=planning_interventions, height=planning_interventions_duree, bottom=planning_interventions_beginning, align='edge')
+planning_interventions_beginning = [[],[],[]]
+planning_interventions_end = [[],[],[]]
+planning_interventions = [[],[],[]]
+planning_interventions_duree = [[],[],[]]
 
-print(max(planning_interventions_end))
+def visualiser_planning(liste_interventions):
+    compteur=0
+    for intervention in liste_interventions: 
+        compteur+=1
+        t = intervention['type']-1
+        planning_interventions_beginning[t].append(intervention.get('beginning'))
+        planning_interventions_end[t].append(intervention.get('end'))
+        planning_interventions_duree[t].append(planning_interventions_end[t][-1]-planning_interventions_beginning[t][-1])
+        planning_interventions[t].append(compteur)
+    print("Planning d'une liste d'intervention")
+    
+    plt.bar(x=planning_interventions[0], height=planning_interventions_duree[0], bottom=planning_interventions_beginning[0], align='edge', color = 'g')
+    plt.bar(x=planning_interventions[1], height=planning_interventions_duree[1], bottom=planning_interventions_beginning[1], align='edge', color = 'b')
+    plt.bar(x=planning_interventions[2], height=planning_interventions_duree[2], bottom=planning_interventions_beginning[2], align='edge', color = 'r')
+
+'''
+print(interventions_lavezzi[0])
+
+for intervention in data_dict_intervention:
+    if intervention['nbJoursInt']>1 and intervention['reste']==False:
+        print('Oui')
+'''
