@@ -163,10 +163,10 @@ for i in range(len(coord_port_med)):
 
 
 cluster=[[] for i in range(k)] #On redéfinie les clusters correctement en une liste d'intervention avec chaque intervention sous forme de dictionnaire
-for i in range(len(numero_cluster)):
+for i in range(len(coord_interventions)):
     for j in range(len(data_dict_intervention)):
         if data_dict_intervention[j].get('coord') == coord_interventions[i]:
-            cluster[numero_cluster[i]].append(data_dict_intervention[i])
+            cluster[numero_cluster[i]].append(data_dict_intervention[j])
             break
 
 for i in range(len(cluster)):
@@ -278,6 +278,7 @@ def visualiser_planning(liste_interventions):
     plt.bar(x=planning_interventions[0], height=planning_interventions_duree[0], bottom=planning_interventions_beginning[0], align='edge', color = 'g')
     plt.bar(x=planning_interventions[1], height=planning_interventions_duree[1], bottom=planning_interventions_beginning[1], align='edge', color = 'b')
     plt.bar(x=planning_interventions[2], height=planning_interventions_duree[2], bottom=planning_interventions_beginning[2], align='edge', color = 'r')
+    plt.show()
 
 '''
 print(interventions_lavezzi[0])
@@ -297,3 +298,10 @@ def tri_intervention(liste_interventions):
                 echange(i,j,liste_interventions)
             elif liste_interventions[j]['beginning']==liste_interventions[i]['beginning'] and liste_interventions[j]['end']<liste_interventions[i]['end']:
                 echange(i,j,liste_interventions)
+                
+visualiser_planning(cluster[0])             
+tri_intervention(cluster[0])
+visualiser_planning(cluster[0])
+visualiser_planning(cluster[1])
+tri_intervention(cluster[1])
+visualiser_planning(cluster[1])
