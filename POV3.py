@@ -63,8 +63,8 @@ for i in range(len(data_dict_boat)):
 
 print('La liste des bateaux de la côte méditerranéenne:'+'\n')
 for i in range(len(list_boat_med)):
-    print(list_boat_med[i]["Port"],list_boat_med[i]["Nature"])
-print(list_boat_med)
+    print(list_boat_med[i]["Nom"],list_boat_med[i]["Port"])
+#print(list_boat_med)
 #print(data_dict[:3])
 print('\n')
 
@@ -260,12 +260,11 @@ print(interventions_lavezzi[8])
 '''
 ### Visualisation d'un planning sous forme de bar chart ###
 
-planning_interventions_beginning = [[],[],[]]
-planning_interventions_end = [[],[],[]]
-planning_interventions = [[],[],[]]
-planning_interventions_duree = [[],[],[]]
-
 def visualiser_planning(liste_interventions):
+    planning_interventions_beginning = [[],[],[]]
+    planning_interventions_end = [[],[],[]]
+    planning_interventions = [[],[],[]]
+    planning_interventions_duree = [[],[],[]]
     compteur=0
     for intervention in liste_interventions: 
         compteur+=1
@@ -287,3 +286,14 @@ for intervention in data_dict_intervention:
     if intervention['nbJoursInt']>1 and intervention['reste']==False:
         print('Oui')
 '''
+
+def echange(i,j,liste):
+    liste[i], liste[j] = liste[j], liste[i]
+
+def tri_intervention(liste_interventions):
+    for i in range(len(liste_interventions)):
+        for j in range(i,len(liste_interventions)):
+            if liste_interventions[j]['beginning']<liste_interventions[i]['beginning']:
+                echange(i,j,liste_interventions)
+            elif liste_interventions[j]['beginning']==liste_interventions[i]['beginning'] and liste_interventions[j]['end']<liste_interventions[i]['end']:
+                echange(i,j,liste_interventions)
